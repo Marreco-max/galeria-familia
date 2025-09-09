@@ -30,6 +30,7 @@ body {
 body img{
     height: auto;
     width: 500px;
+    transition: width 0.4s ease;
 }
 
 
@@ -38,25 +39,44 @@ header {
     color: white;
     padding: 10px;
 }
+
+.zoom {
+    position: absolute;
+    z-index: 999;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
 </style>
 
 <script>
 var fator_lupa = 2;
+
 document.querySelectorAll('img').forEach(function(img) {
-    var larguraOriginal = img.clientWidth;
-    var zoomAtivo = false;
-    img.onclick = function () {
-        if (!zoomAtivo) {
-            this.style.width = (larguraOriginal * fator_lupa) + "px";
-            zoomAtivo = true;
-        } else {
-            this.style.width = larguraOriginal + "px";
-            zoomAtivo = false;
-        }
-    };
+    img.addEventListener('click', function () {
+
+        if (document.querySelector('.zoom-clone')) return;
+
+
+        var clone = img.cloneNode(true);
+        clone.classList.add('zoom', 'zoom-clone');
+        clone.style.width = (img.clientWidth * fator_lupa) + "px";
+        clone.style.cursor = "pointer";
+
+
+        clone.removeAttribute('id');
+
+
+        clone.onclick = function () {
+            clone.remove();
+        };
+
+
+        document.body.appendChild(clone);
+    });
 });
 </script>
 
 </body>
 </html>
-
